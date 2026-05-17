@@ -1,35 +1,32 @@
-import fs from "fs";
-import path from "path";
-import PDFDocument from "pdfkit";
-import QRCode from "qrcode";
+const QRCode = require("qrcode");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const path = require("path");
 
-export async function makeQrText(passId) {
-  return `VISITOR_PASS:${passId}`;
-}
+const makeQrText = async (passId) => {
+  return `pass_${passId}_${Date.now()}`;
+};
 
-export async function makeQrImage(qrText) {
-  return QRCode.toDataURL(qrText);
-}
+const makeQrImage = async (qrText) => {
+  const qrDir = path.join(process.cwd(), "uploads", "qrs");
+  if (!fs.existsSync(qrDir)) fs.mkdirSync(qrDir, { recursive: true });
+  const qrPath = path.join(qrDir, `${qrText}.png`);
+  await QRCode.toFile(qrPath, qrText);
+  return `/uploads/qrs/${qrText}.png`;
+};
 
-export function makeBadgePdf({ pass, visitor }) {
-  const fileName = `badge-${pass._id}.pdf`;
-  const folder = path.join(process.cwd(), "uploads");
-  const fullPath = path.join(folder, fileName);
-
-  if (!fs.existsSync(folder)) fs.mkdirSync(folder);
-
-  const doc = new PDFDocument({ size: "A6", margin: 24 });
-  doc.pipe(fs.createWriteStream(fullPath));
-  doc.fontSize(18).text("Visitor Pass", { align: "center" });
-  doc.moveDown();
-  doc.fontSize(11).text(`Name: ${visitor.name}`);
-  doc.text(`Company: ${visitor.company || "N/A"}`);
-  doc.text(`Purpose: ${visitor.purpose}`);
-  doc.text(`Valid Till: ${new Date(pass.validTo).toLocaleString()}`);
-  doc.moveDown();
-  const qrBuffer = Buffer.from(pass.qrImage.split(",")[1], "base64");
-  doc.image(qrBuffer, { width: 120, align: "center" });
+const makeBadgePdf = ({ pass, visitor }) => {
+  const pdfDir = path.join(process.cwd(), "uploads", "pdfs");
+  if (!fs.existsSync(pdfDir)) fs.mkdirSync(pdfDir, { recursive: true });
+  const pdfPath = path.join(pdfDir, `${pass._id}.pdf`);
+  const doc = new PDFDocument();
+  doc.pipe(fs.createWriteStream(pdfPath));
+  doc.fontSize(20).text("Visitor Pass", { align: "center" });
+  doc.fontSize(14).text(`Name: ${visitor.name}`);
+  doc.text(`Email: ${visitor.email}`);
+  doc.text(`Valid till: ${new Date(pass.validTo).toLocaleString()}`);
   doc.end();
+  return `/uploads/pdfs/${pass._id}.pdf`;
+};
 
-  return `/uploads/${fileName}`;
-}
+module.exports = { makeBadgePdf, makeQrImage, makeQrText };

@@ -1,14 +1,14 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const checkLogSchema = new mongoose.Schema(
   {
-    pass: { type: mongoose.Schema.Types.ObjectId, ref: "Pass", required: true },
+    pass: { type: mongoose.Schema.Types.ObjectId, ref: "Pass" },
     visitor: { type: mongoose.Schema.Types.ObjectId, ref: "Visitor", required: true },
     action: { type: String, enum: ["check-in", "check-out"], required: true },
-    scannedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    location: { type: String, default: "Main Gate" }
+    location: String,
+    scannedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
   },
   { timestamps: true }
 );
 
-export default mongoose.model("CheckLog", checkLogSchema);
+module.exports = mongoose.model("CheckLog", checkLogSchema);

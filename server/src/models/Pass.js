@@ -1,23 +1,22 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const passSchema = new mongoose.Schema(
   {
     visitor: { type: mongoose.Schema.Types.ObjectId, ref: "Visitor", required: true },
     appointment: { type: mongoose.Schema.Types.ObjectId, ref: "Appointment" },
-    issuedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    qrText: { type: String, required: true },
-    qrImage: { type: String, required: true },
-    pdfPath: { type: String, default: "" },
+    issuedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    qrText: { type: String, unique: true },
+    qrImage: String,
+    pdfPath: String,
+    validTo: { type: Date, required: true },
     status: {
       type: String,
-      enum: ["active", "used", "expired", "cancelled"],
+      enum: ["active", "used", "expired"],
       default: "active"
     },
-    validFrom: { type: Date, default: Date.now },
-    validTo: { type: Date, required: true },
-    organization: { type: String, default: "Main Office" }
+    organization: String
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Pass", passSchema);
+module.exports = mongoose.model("Pass", passSchema);  
