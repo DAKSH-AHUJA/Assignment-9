@@ -33,6 +33,12 @@ export default function Passes() {
     return `${uploadUrl}${pass.qrImage}`;
   }
 
+  function getPdfLink(pass) {
+    if (!pass.pdfPath) return "";
+    if (pass.pdfPath.startsWith("/api/")) return `${apiBase}${pass.pdfPath}?token=${getToken()}`;
+    return `${uploadUrl}${pass.pdfPath}`;
+  }
+
   return (
     <section>
       <div className="page-header">
@@ -62,7 +68,7 @@ export default function Passes() {
             <p>Valid to: {new Date(pass.validTo).toLocaleString()}</p>
             {pass.qrImage && <img className="qr-image" src={getQrImage(pass)} alt="Pass QR code" />}
             {pass.pdfPath && (
-              <a className="small-btn" href={`${uploadUrl}${pass.pdfPath}`} target="_blank" rel="noreferrer">
+              <a className="small-btn" href={getPdfLink(pass)} target="_blank" rel="noreferrer">
                 Download PDF
               </a>
             )}

@@ -2,7 +2,8 @@ const express = require("express");
 const Pass = require("../models/Pass.js");
 const Visitor = require("../models/Visitor.js");
 const { protect, allowRoles } = require("../middleware/auth.js");
-const { makeBadgePdf, makeQrBuffer, makeQrImage, makeQrText } = require("../utils/passFiles.js");
+const { makeBadgePdfBuffer, makeQrBuffer, makeQrImage, makeQrText } = require("../utils/passFiles.js");
+const { sendEmail } = require("../utils/notify.js");
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.get("/", protect, async (req, res) => {
     if (!pass.visitor) return null;
     const item = pass.toObject();
     if (item.qrText) item.qrImage = `/api/passes/${item._id}/qr`;
+    item.pdfPath = `/api/passes/${item._id}/pdf`;
     return item;
   }));
 
@@ -32,6 +34,16 @@ router.get("/:id/qr", protect, async (req, res) => {
 
   const qrImage = await makeQrBuffer(pass.qrText);
   res.type("png").send(qrImage);
+});
+
+router.get("/:id/pdf", protect, async (req, res) => {
+  const pass = await Pass.findById(req.params.id).populate("visitor");
+  if (!pass) return res.status(404).json({ message: "Pass not found" });
+
+  const pdf = await makeBadgePdfBuffer({ pass, visitor: pass.visitor });
+  res.header("Content-Type", "application/pdf");
+  res.attachment(`visitor-pass-${pass._id}.pdf`);
+  res.send(pdf);
 });
 
 router.post("/", protect, allowRoles("admin", "security"), async (req, res) => {
@@ -51,8 +63,10 @@ router.post("/", protect, allowRoles("admin", "security"), async (req, res) => {
 
     pass.qrText = await makeQrText(pass._id);
     pass.qrImage = await makeQrImage(pass.qrText);
-    pass.pdfPath = makeBadgePdf({ pass, visitor });
+    pass.pdfPath = `/api/passes/${pass._id}/pdf`;
     await pass.save();
+
+    await sendEmail(visitor.email, "Visitor pass issued", "Your visitor pass has been issued. Please show the QR code at the gate.");
 
     res.status(201).json(pass);
   } catch (error) {

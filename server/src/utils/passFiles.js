@@ -29,4 +29,22 @@ const makeBadgePdf = ({ pass, visitor }) => {
   return `/uploads/pdfs/${pass._id}.pdf`;
 };
 
-module.exports = { makeBadgePdf, makeQrBuffer, makeQrImage, makeQrText };
+const makeBadgePdfBuffer = ({ pass, visitor }) => {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    const doc = new PDFDocument();
+
+    doc.on("data", (chunk) => chunks.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+
+    doc.fontSize(20).text("Visitor Pass", { align: "center" });
+    doc.moveDown();
+    doc.fontSize(14).text(`Name: ${visitor.name}`);
+    doc.text(`Email: ${visitor.email}`);
+    doc.text(`Valid till: ${new Date(pass.validTo).toLocaleString()}`);
+    doc.end();
+  });
+};
+
+module.exports = { makeBadgePdf, makeBadgePdfBuffer, makeQrBuffer, makeQrImage, makeQrText };
