@@ -52,5 +52,3 @@ Add your own in `screenshots` folder: login, dashboard, visitor form, appointmen
 
 - Email/SMS are demo – prints to terminal if no email config.
 - Bonus: multi‑org field, audit logs, CSV export, Docker/Nginx files.
-
-That's it – simple and works.
