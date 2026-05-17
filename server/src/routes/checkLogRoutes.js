@@ -33,7 +33,18 @@ router.post("/scan", protect, allowRoles("admin", "security"), async (req, res) 
     await pass.save();
   }
 
-  res.status(201).json(log);
+  res.status(201).json({
+    valid: true,
+    message: "Pass is valid",
+    log,
+    pass: {
+      visitorName: pass.visitor.name,
+      visitorEmail: pass.visitor.email,
+      action: log.action,
+      location: log.location,
+      scannedAt: log.createdAt
+    }
+  });
 });
 
 module.exports = router;

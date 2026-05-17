@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000" : "");
 const API_PREFIX = "/api";
 
 export function getUser() {
@@ -31,4 +31,4 @@ export async function api(path, options = {}) {
   return data;
 }
 
-export const uploadUrl = import.meta.env.VITE_UPLOAD_URL || "http://localhost:5000";
+export const uploadUrl = import.meta.env.VITE_UPLOAD_URL || (import.meta.env.DEV ? "http://localhost:5000" : "");

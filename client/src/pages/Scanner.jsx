@@ -60,10 +60,12 @@ export default function Scanner() {
           {result ? (
             <table>
               <tbody>
-                <tr><th>Visitor</th><td>{result.visitor}</td></tr>
-                <tr><th>Action</th><td>{result.action}</td></tr>
-                <tr><th>Location</th><td>{result.location}</td></tr>
-                <tr><th>Time</th><td>{new Date(result.createdAt).toLocaleString()}</td></tr>
+                <tr><th>Status</th><td>{result.valid ? "Valid Pass" : "Invalid Pass"}</td></tr>
+                <tr><th>Visitor</th><td>{result.pass?.visitorName}</td></tr>
+                <tr><th>Email</th><td>{result.pass?.visitorEmail}</td></tr>
+                <tr><th>Action</th><td>{result.pass?.action}</td></tr>
+                <tr><th>Location</th><td>{result.pass?.location}</td></tr>
+                <tr><th>Time</th><td>{new Date(result.pass?.scannedAt).toLocaleString()}</td></tr>
               </tbody>
             </table>
           ) : (
