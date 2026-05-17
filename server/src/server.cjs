@@ -55,3 +55,21 @@ if (!MONGODB_URI) {
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('✅ MongoDB connected (extra check)'))
   .catch(err => console.error('MongoDB error:', err));
+
+  // TEMPORARY – remove after seeding
+app.post("/api/seed", async (req, res) => {
+  const User = require("./models/User.js");
+  const bcrypt = require("bcryptjs");
+  
+  const demoUsers = [
+    { name: "Admin", email: "admin@demo.com", password: await bcrypt.hash("123456", 10), role: "admin" },
+    { name: "Security", email: "security@demo.com", password: await bcrypt.hash("123456", 10), role: "security" },
+    { name: "Employee", email: "employee@demo.com", password: await bcrypt.hash("123456", 10), role: "employee" },
+    { name: "Visitor", email: "visitor@demo.com", password: await bcrypt.hash("123456", 10), role: "visitor" }
+  ];
+  
+  for (const user of demoUsers) {
+    await User.findOneAndUpdate({ email: user.email }, user, { upsert: true });
+  }
+  res.json({ message: "Seeded demo users" });
+});
