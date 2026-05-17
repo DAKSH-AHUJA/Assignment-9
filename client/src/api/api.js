@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_PREFIX = "/api";
 
 export function getUser() {
   return JSON.parse(localStorage.getItem("user") || "null");
@@ -21,7 +22,10 @@ export async function api(path, options = {}) {
   if (token) headers.Authorization = `Bearer ${token}`;
   if (!(options.body instanceof FormData)) headers["Content-Type"] = "application/json";
 
-  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const fullPath = path.startsWith("/") ? path : `/${path}`;
+  const url = `${API_BASE}${API_PREFIX}${fullPath}`;
+
+  const response = await fetch(url, { ...options, headers });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.message || "Something went wrong");
   return data;
