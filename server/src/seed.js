@@ -1,62 +1,72 @@
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import Appointment from "./models/Appointment.js";
-import CheckLog from "./models/CheckLog.js";
-import Pass from "./models/Pass.js";
-import User from "./models/User.js";
-import Visitor from "./models/Visitor.js";
-import { makeQrImage, makeQrText } from "./utils/passFiles.js";
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const Appointment = require("./models/Appointment.js");
+const CheckLog = require("./models/CheckLog.js");
+const Pass = require("./models/Pass.js");
+const User = require("./models/User.js");
+const Visitor = require("./models/Visitor.js");
+const { makeQrImage, makeQrText } = require("./utils/passFiles.js");
+const { ensureDemoUsers } = require("./utils/demoUsers.js");
 
 dotenv.config();
-await mongoose.connect(process.env.MONGO_URI);
 
-await Promise.all([
-  User.deleteMany(),
-  Visitor.deleteMany(),
-  Appointment.deleteMany(),
-  Pass.deleteMany(),
-  CheckLog.deleteMany()
-]);
+async function seed() {
+  const mongoUrl = process.env.MONGODB_URI || process.env.MONGO_URI;
+  await mongoose.connect(mongoUrl);
 
-const users = await User.create([
-  { name: "Admin User", email: "admin@demo.com", password: "123456", role: "admin", department: "IT" },
-  { name: "Security Guard", email: "security@demo.com", password: "123456", role: "security", department: "Gate" },
-  { name: "Host Employee", email: "employee@demo.com", password: "123456", role: "employee", department: "HR" },
-  { name: "Visitor Demo", email: "visitor@demo.com", password: "123456", role: "visitor" }
-]);
+  await Promise.all([
+    Visitor.deleteMany(),
+    Appointment.deleteMany(),
+    Pass.deleteMany(),
+    CheckLog.deleteMany()
+  ]);
 
-const visitors = await Visitor.create([
-  { name: "Ravi Kumar", email: "ravi@example.com", phone: "9876543210", company: "TechSoft", purpose: "Interview", createdBy: users[2]._id },
-  { name: "Sneha Sharma", email: "sneha@example.com", phone: "9876501234", company: "Print Media", purpose: "Meeting", createdBy: users[2]._id },
-  { name: "Amit Verma", email: "amit@example.com", phone: "9000011111", company: "Courier", purpose: "Delivery", createdBy: users[1]._id }
-]);
+  await ensureDemoUsers();
 
-const appointments = await Appointment.create([
-  { visitor: visitors[0]._id, host: users[2]._id, date: new Date(), purpose: "Interview", status: "approved" },
-  { visitor: visitors[1]._id, host: users[2]._id, date: new Date(Date.now() + 86400000), purpose: "Meeting", status: "pending" }
-]);
+  const admin = await User.findOne({ email: "admin@demo.com" });
+  const security = await User.findOne({ email: "security@demo.com" });
+  const employee = await User.findOne({ email: "employee@demo.com" });
 
-let pass = await Pass.create({
-  visitor: visitors[0]._id,
-  appointment: appointments[0]._id,
-  issuedBy: users[1]._id,
-  qrText: "creating",
-  qrImage: "creating",
-  validTo: new Date(Date.now() + 86400000)
+  const visitors = await Visitor.create([
+    { name: "Ravi Kumar", email: "ravi@example.com", phone: "9876543210", company: "TechSoft", purpose: "Interview", createdBy: employee._id },
+    { name: "Sneha Sharma", email: "sneha@example.com", phone: "9876501234", company: "Print Media", purpose: "Meeting", createdBy: employee._id },
+    { name: "Amit Verma", email: "amit@example.com", phone: "9000011111", company: "Courier", purpose: "Delivery", createdBy: security._id }
+  ]);
+
+  const appointment = await Appointment.create({
+    visitor: visitors[0]._id,
+    host: employee._id,
+    date: new Date(),
+    purpose: "Interview",
+    status: "approved"
+  });
+
+  const pass = await Pass.create({
+    visitor: visitors[0]._id,
+    appointment: appointment._id,
+    issuedBy: admin._id,
+    validTo: new Date(Date.now() + 86400000),
+    qrText: "creating"
+  });
+
+  pass.qrText = await makeQrText(pass._id);
+  pass.qrImage = await makeQrImage(pass.qrText);
+  await pass.save();
+
+  await CheckLog.create({
+    pass: pass._id,
+    visitor: visitors[0]._id,
+    action: "check-in",
+    scannedBy: security._id,
+    location: "Main Gate"
+  });
+
+  console.log("Demo data added");
+  console.log("Password for all demo users: 123456");
+  await mongoose.disconnect();
+}
+
+seed().catch(async (error) => {
+  console.error(error.message);
+  await mongoose.disconnect();
 });
-pass.qrText = await makeQrText(pass._id);
-pass.qrImage = await makeQrImage(pass.qrText);
-await pass.save();
-
-await CheckLog.create({
-  pass: pass._id,
-  visitor: visitors[0]._id,
-  action: "check-in",
-  scannedBy: users[1]._id,
-  location: "Main Gate"
-});
-
-console.log("Demo data added");
-console.log("Logins: admin@demo.com, security@demo.com, employee@demo.com, visitor@demo.com");
-console.log("Password for all: 123456");
-await mongoose.disconnect();

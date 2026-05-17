@@ -26,6 +26,12 @@ export default function Passes() {
     }
   }
 
+  function getQrImage(pass) {
+    if (!pass.qrImage) return "";
+    if (pass.qrImage.startsWith("data:image")) return pass.qrImage;
+    return `${uploadUrl}${pass.qrImage}`;
+  }
+
   return (
     <section>
       <div className="page-header">
@@ -53,7 +59,7 @@ export default function Passes() {
             <p>{pass.visitor?.email}</p>
             <span className={`pill ${pass.status}`}>{pass.status}</span>
             <p>Valid to: {new Date(pass.validTo).toLocaleString()}</p>
-            {pass.qrImage && <img className="qr-image" src={pass.qrImage} alt="Pass QR code" />}
+            {pass.qrImage && <img className="qr-image" src={getQrImage(pass)} alt="Pass QR code" />}
             {pass.pdfPath && (
               <a className="small-btn" href={`${uploadUrl}${pass.pdfPath}`} target="_blank" rel="noreferrer">
                 Download PDF
