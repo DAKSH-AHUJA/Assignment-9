@@ -1,27 +1,35 @@
-import cors from "cors";
-import dotenv from "dotenv";
-import express from "express";
-import path from "path";
-import { connectDB } from "./config/db.js";
-import appointmentRoutes from "./routes/appointmentRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
-import checkLogRoutes from "./routes/checkLogRoutes.js";
-import dashboardRoutes from "./routes/dashboardRoutes.js";
-import passRoutes from "./routes/passRoutes.js";
-import visitorRoutes from "./routes/visitorRoutes.js";
+
+const cors = require("cors");
+const dotenv = require("dotenv");
+const express = require("express");
+const path = require("path");
+const { connectDB } = require("./config/db.js");
+const appointmentRoutes = require("./routes/appointmentRoutes.js");
+const authRoutes = require("./routes/authRoutes.js");
+const checkLogRoutes = require("./routes/checkLogRoutes.js");
+const dashboardRoutes = require("./routes/dashboardRoutes.js");
+const passRoutes = require("./routes/passRoutes.js");
+const visitorRoutes = require("./routes/visitorRoutes.js");
+const mongoose = require("mongoose");
 
 dotenv.config();
+
 connectDB();
 
 const app = express();
+
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 app.use(express.json());
+
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 const clientDist = path.join(process.cwd(), "..", "client-dist");
 app.use(express.static(clientDist));
 
+// Root route
 app.get("/", (req, res) => res.json({ message: "Visitor Pass API running" }));
+
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/visitors", visitorRoutes);
 app.use("/api/appointments", appointmentRoutes);
@@ -35,17 +43,15 @@ app.get("*", (req, res) => {
   });
 });
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-const mongoose = require('mongoose');
 
-const MONGODB_URI = process.env.MONGODB_URI; // This reads the Render variable
-
+const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) {
   console.error('❌ MONGODB_URI is not defined in environment variables');
   process.exit(1);
 }
-
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log('✅ MongoDB connected'))
+  .then(() => console.log('✅ MongoDB connected (extra check)'))
   .catch(err => console.error('MongoDB error:', err));

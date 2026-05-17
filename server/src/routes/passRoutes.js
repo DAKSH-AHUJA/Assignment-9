@@ -1,8 +1,8 @@
-import express from "express";
-import Pass from "../models/Pass.js";
-import Visitor from "../models/Visitor.js";
-import { protect, allowRoles } from "../middleware/auth.js";
-import { makeBadgePdf, makeQrImage, makeQrText } from "../utils/passFiles.js";
+const express = require("express");
+const Pass = require("../models/Pass.js");
+const Visitor = require("../models/Visitor.js");
+const { protect, allowRoles } = require("../middleware/auth.js");
+const { makeBadgePdf, makeQrImage, makeQrText } = require("../utils/passFiles.js");
 
 const router = express.Router();
 
@@ -49,4 +49,4 @@ router.get("/verify/:qrText", protect, allowRoles("admin", "security"), async (r
   res.json({ valid: pass.status === "active" && !expired, expired, pass });
 });
 
-export default router;
+module.exports = router;

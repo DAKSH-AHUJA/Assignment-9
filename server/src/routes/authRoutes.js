@@ -1,7 +1,7 @@
-import express from "express";
-import User from "../models/User.js";
-import { makeToken } from "../utils/token.js";
-import { protect, allowRoles } from "../middleware/auth.js";
+const express = require("express");
+const User = require("../models/User.js");
+const { makeToken } = require("../utils/token.js");
+const { protect, allowRoles } = require("../middleware/auth.js");
 
 const router = express.Router();
 
@@ -47,4 +47,4 @@ router.get("/users", protect, allowRoles("admin", "employee", "security"), async
   res.json(users);
 });
 
-export default router;
+module.exports = router;

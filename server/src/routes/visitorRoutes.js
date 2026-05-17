@@ -1,7 +1,7 @@
-import express from "express";
-import multer from "multer";
-import Visitor from "../models/Visitor.js";
-import { protect, allowRoles } from "../middleware/auth.js";
+const express = require("express");
+const multer = require("multer");
+const Visitor = require("../models/Visitor.js");
+const { protect, allowRoles } = require("../middleware/auth.js");
 
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
@@ -37,4 +37,4 @@ router.delete("/:id", protect, allowRoles("admin"), async (req, res) => {
   res.json({ message: "Visitor deleted" });
 });
 
-export default router;
+module.exports = router;

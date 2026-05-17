@@ -1,8 +1,8 @@
-import express from "express";
-import Appointment from "../models/Appointment.js";
-import Visitor from "../models/Visitor.js";
-import { protect, allowRoles } from "../middleware/auth.js";
-import { sendEmail, sendSMS } from "../utils/notify.js";
+const express = require("express");
+const Appointment = require("../models/Appointment.js");
+const Visitor = require("../models/Visitor.js");
+const { protect, allowRoles } = require("../middleware/auth.js");
+const { sendEmail, sendSMS } = require("../utils/notify.js");
 
 const router = express.Router();
 
@@ -64,4 +64,4 @@ router.patch("/:id/status", protect, allowRoles("admin", "employee"), async (req
   res.json(appointment);
 });
 
-export default router;
+module.exports = router;

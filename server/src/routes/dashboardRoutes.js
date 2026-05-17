@@ -1,10 +1,10 @@
-import express from "express";
-import Appointment from "../models/Appointment.js";
-import CheckLog from "../models/CheckLog.js";
-import Pass from "../models/Pass.js";
-import User from "../models/User.js";
-import Visitor from "../models/Visitor.js";
-import { protect } from "../middleware/auth.js";
+const express = require("express");
+const Appointment = require("../models/Appointment.js");
+const CheckLog = require("../models/CheckLog.js");
+const Pass = require("../models/Pass.js");
+const User = require("../models/User.js");
+const Visitor = require("../models/Visitor.js");
+const { protect } = require("../middleware/auth.js");
 
 const router = express.Router();
 
@@ -46,4 +46,4 @@ router.get("/export/logs.csv", protect, async (req, res) => {
   res.send(lines.join("\n"));
 });
 
-export default router;
+module.exports = router;

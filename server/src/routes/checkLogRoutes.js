@@ -1,7 +1,7 @@
-import express from "express";
-import CheckLog from "../models/CheckLog.js";
-import Pass from "../models/Pass.js";
-import { protect, allowRoles } from "../middleware/auth.js";
+const express = require("express");
+const CheckLog = require("../models/CheckLog.js");
+const Pass = require("../models/Pass.js");
+const { protect, allowRoles } = require("../middleware/auth.js");
 
 const router = express.Router();
 
@@ -36,4 +36,4 @@ router.post("/scan", protect, allowRoles("admin", "security"), async (req, res) 
   res.status(201).json(log);
 });
 
-export default router;
+module.exports = router;
