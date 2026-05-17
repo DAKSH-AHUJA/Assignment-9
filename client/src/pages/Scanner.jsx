@@ -24,6 +24,7 @@ export default function Scanner() {
         method: "POST",
         body: JSON.stringify({ qrText, action, location })
       });
+      setMessage("Pass is valid");
       setResult(data);
     } catch (error) {
       setMessage(error.message);

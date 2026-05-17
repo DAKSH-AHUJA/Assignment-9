@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, uploadUrl } from "../api/api.js";
+import { api, apiBase, getToken, uploadUrl } from "../api/api.js";
 
 export default function Passes() {
   const [passes, setPasses] = useState([]);
@@ -29,6 +29,7 @@ export default function Passes() {
   function getQrImage(pass) {
     if (!pass.qrImage) return "";
     if (pass.qrImage.startsWith("data:image")) return pass.qrImage;
+    if (pass.qrImage.startsWith("/api/")) return `${apiBase}${pass.qrImage}?token=${getToken()}`;
     return `${uploadUrl}${pass.qrImage}`;
   }
 

@@ -2,7 +2,7 @@ const express = require("express");
 const Pass = require("../models/Pass.js");
 const Visitor = require("../models/Visitor.js");
 const { protect, allowRoles } = require("../middleware/auth.js");
-const { makeBadgePdf, makeQrImage, makeQrText } = require("../utils/passFiles.js");
+const { makeBadgePdf, makeQrBuffer, makeQrImage, makeQrText } = require("../utils/passFiles.js");
 
 const router = express.Router();
 
@@ -12,7 +12,26 @@ router.get("/", protect, async (req, res) => {
     .populate("appointment")
     .populate("issuedBy", "name role")
     .sort("-createdAt");
-  res.json(passes);
+
+  const orphanPasses = passes.filter((pass) => !pass.visitor).map((pass) => pass._id);
+  if (orphanPasses.length) await Pass.deleteMany({ _id: { $in: orphanPasses } });
+
+  const fixedPasses = await Promise.all(passes.map(async (pass) => {
+    if (!pass.visitor) return null;
+    const item = pass.toObject();
+    if (item.qrText) item.qrImage = `/api/passes/${item._id}/qr`;
+    return item;
+  }));
+
+  res.json(fixedPasses.filter(Boolean));
+});
+
+router.get("/:id/qr", protect, async (req, res) => {
+  const pass = await Pass.findById(req.params.id);
+  if (!pass) return res.status(404).json({ message: "Pass not found" });
+
+  const qrImage = await makeQrBuffer(pass.qrText);
+  res.type("png").send(qrImage);
 });
 
 router.post("/", protect, allowRoles("admin", "security"), async (req, res) => {

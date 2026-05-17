@@ -8,11 +8,11 @@ const makeQrText = async (passId) => {
 };
 
 const makeQrImage = async (qrText) => {
-  const qrDir = path.join(process.cwd(), "uploads", "qrs");
-  if (!fs.existsSync(qrDir)) fs.mkdirSync(qrDir, { recursive: true });
-  const qrPath = path.join(qrDir, `${qrText}.png`);
-  await QRCode.toFile(qrPath, qrText);
-  return `/uploads/qrs/${qrText}.png`;
+  return QRCode.toDataURL(qrText);
+};
+
+const makeQrBuffer = async (qrText) => {
+  return QRCode.toBuffer(qrText);
 };
 
 const makeBadgePdf = ({ pass, visitor }) => {
@@ -29,4 +29,4 @@ const makeBadgePdf = ({ pass, visitor }) => {
   return `/uploads/pdfs/${pass._id}.pdf`;
 };
 
-module.exports = { makeBadgePdf, makeQrImage, makeQrText };
+module.exports = { makeBadgePdf, makeQrBuffer, makeQrImage, makeQrText };

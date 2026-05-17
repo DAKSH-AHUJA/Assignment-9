@@ -1,5 +1,6 @@
 const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000" : "");
 const API_PREFIX = "/api";
+export const apiBase = API_BASE;
 
 export function getUser() {
   return JSON.parse(localStorage.getItem("user") || "null");
