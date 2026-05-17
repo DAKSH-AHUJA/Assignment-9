@@ -1,0 +1,342 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f4f4;
+  color: #222;
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 230px;
+  background: #253529;
+  color: white;
+  padding: 20px;
+}
+
+.brand {
+  margin-bottom: 25px;
+}
+
+.brand h1 {
+  font-size: 20px;
+}
+
+.brand p {
+  font-size: 13px;
+  color: #d6d6d6;
+}
+
+.sidebar a,
+.logout-btn {
+  display: block;
+  width: 100%;
+  color: white;
+  text-decoration: none;
+  background: #3d5a43;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.logout-btn {
+  margin-top: 25px;
+}
+
+.main-area {
+  flex: 1;
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.page-header h2 {
+  font-size: 24px;
+}
+
+.page-header p {
+  color: #666;
+  margin-top: 4px;
+}
+
+.panel,
+form {
+  background: white;
+  border: 1px solid #d8d8d8;
+  border-radius: 6px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-grid button {
+  grid-column: 1 / -1;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+button,
+.small-btn {
+  display: inline-block;
+  background: #2c6e2c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 9px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+button:hover,
+.small-btn:hover {
+  background: #1f4f1f;
+}
+
+.search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.search-row button {
+  width: 110px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #eeeeee;
+}
+
+.card-grid,
+.pass-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.visitor-card,
+.pass-card {
+  background: white;
+  border: 1px solid #d8d8d8;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.visitor-card p,
+.pass-card p {
+  margin: 6px 0;
+  word-break: break-word;
+}
+
+.avatar {
+  width: 55px;
+  height: 55px;
+  background: #dddddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pill {
+  display: inline-block;
+  background: #eeeeee;
+  color: #222;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.pill.active,
+.pill.approved {
+  background: #d8f0d8;
+}
+
+.pill.used,
+.pill.pending {
+  background: #fff2c4;
+}
+
+.pill.rejected,
+.pill.expired,
+.pill.cancelled {
+  background: #ffd4d4;
+}
+
+.qr-image {
+  display: block;
+  width: 150px;
+  height: 150px;
+  margin: 12px 0;
+  border: 1px solid #ddd;
+}
+
+/*I kept this simple so the PDF button does not stick to the QR image. */
+.pass-card .small-btn {
+  margin-top: 5px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #d8d8d8;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.stat-card span {
+  color: #666;
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 28px;
+  margin-top: 6px;
+}
+
+.scanner-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.upload-box {
+  display: block;
+  border: 2px dashed #999;
+  background: #fafafa;
+  padding: 25px;
+  text-align: center;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.upload-box input {
+  margin-top: 12px;
+}
+
+#qr-reader {
+  display: none;
+}
+
+.segmented {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.segmented button {
+  flex: 1;
+  background: #777;
+}
+
+.segmented button.active {
+  background: #2c6e2c;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-box {
+  width: 360px;
+  text-align: center;
+}
+
+.auth-box h1 {
+  margin-bottom: 10px;
+}
+
+.auth-box p,
+.auth-box input,
+.auth-box button {
+  margin-bottom: 12px;
+}
+
+.error {
+  color: #b00020;
+  margin: 10px 0;
+}
+
+@media (max-width: 750px) {
+  .app-shell,
+  .page-header,
+  .scanner-layout,
+  .search-row {
+    display: block;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search-row button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
