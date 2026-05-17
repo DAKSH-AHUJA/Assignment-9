@@ -1,130 +1,56 @@
-#Pass management system
+# Visitor Pass System – My Assignment Project
 
-A simple app I built for my assignment.  
-It helps manage visitors, appointments, QR passes, and check-ins.
+**GitHub:** https://github.com/DAKSH-AHUJA/Assignment-9.git
+
+A simple visitor management app. Lets you register visitors, create appointments, generate QR passes, and scan check‑in/out.
 
 ## What it does
 
 - Login (admin, security, employee, visitor)
 - Add visitors with photo
-- Employees make appointments and approve them
-- Generate QR pass and PDF badge
+- Employees create & approve appointments
+- Generate QR pass + PDF badge
 - Scan QR to check in/out
-- Dashboard shows counts
+- Dashboard with counts
 - Search visitors, export CSV
 - Email/SMS demo (prints to terminal if not setup)
 
-## Tech I used
+## Tech used
 
 - React + Vite (frontend)
 - Node.js + Express (backend)
-- MongoDB (database)
-- JWT for login
-- Multer, QRCode, PDFKit
+- MongoDB, JWT, Multer, QRCode, PDFKit
 
-## How to run
+## Run locally
 
 1. Install MongoDB and start it.
-2. Go to `server` folder, copy `.env.example` to `.env`
-3. Back to root folder, run `npm run install-all`
-4. Run `npm run seed` (adds dummy data)
-5. Run `npm run dev`
+2. `cd server` → copy `.env.example` to `.env`
+3. Back to root → `npm run install-all`
+4. `npm run seed` (adds demo data)
+5. `npm run dev`
 
 Open http://localhost:5173
 
-## Demo login
+## Demo login (password for all: `123456`)
 
-Password for all: **123456**
-
-Emails:
 - admin@demo.com
 - security@demo.com
 - employee@demo.com
 - visitor@demo.com
 
-```
+## Main API routes
 
-## Setup
+- `/api/auth/login`, `/api/auth/register`
+- `/api/visitors`, `/api/appointments`, `/api/passes`
+- `/api/checklogs/scan`, `/api/dashboard`, `/api/dashboard/export/logs.csv`
 
-1. Install MongoDB and keep it running.
-2. Copy the backend environment file:
+## Screenshots
 
-```bash
-cd server
-copy .env.example .env
-```
-
-3. Install dependencies from the root folder:
-
-```bash
-npm run install-all
-```
-
-4. Add demo data:
-
-```bash
-npm run seed
-```
-
-5. Start frontend and backend together:
-
-```bash
-npm run dev
-```
-
-Frontend: http://localhost:5173  
-Backend: http://localhost:5000
-
-## Demo Login
-
-All demo users use this password:
-
-```txt
-123456
-```
-
-Accounts:
-
-```txt
-admin@demo.com
-security@demo.com
-employee@demo.com
-visitor@demo.com
-```
-
-## Main API Routes
-
-- `POST /api/auth/login`
-- `POST /api/auth/register`
-- `GET /api/visitors`
-- `POST /api/visitors`
-- `GET /api/appointments`
-- `POST /api/appointments`
-- `PATCH /api/appointments/:id/status`
-- `GET /api/passes`
-- `POST /api/passes`
-- `POST /api/checklogs/scan`
-- `GET /api/dashboard`
-- `GET /api/dashboard/export/logs.csv`
-
-## Screenshots / Demo Video
-
-Run the project and add screenshots in the `screenshots` folder. Suggested screenshots:
-
-- Login page
-- Dashboard
-- Visitor registration
-- Appointment approval
-- QR pass page
-- QR scanner page
+Add your own in `screenshots` folder: login, dashboard, visitor form, appointment approval, QR passes, scanner.
 
 ## Notes
 
-Email and SMS are demo integrations. If mail credentials are not added in `.env`, the backend prints notification messages in the terminal. This keeps the project easy to run for assignment checking.
+- Email/SMS are demo – prints to terminal if no email config.
+- Bonus: multi‑org field, audit logs, CSV export, Docker/Nginx files.
 
-## Bonus Items Covered
-
-- Multi-organization field in models
-- Audit style check logs
-- CSV export reports
-- Docker/Nginx files included for deployment practice
+That's it – simple and works.
